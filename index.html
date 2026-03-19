@@ -9,32 +9,46 @@
         .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
         input { width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background: #ff0000; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .instrucciones { font-size: 12px; color: #666; margin-top: 15px; }
+        .footer { font-size: 11px; color: #888; margin-top: 20px; line-height: 1.4; }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>YouTube a MP3</h2>
-        <p>Pega el enlace y se abrirá la descarga</p>
-        <input type="text" id="videoUrl" placeholder="Pega el enlace de YouTube aquí...">
-        <button onclick="descargar()">Abrir Descarga (MP3)</button>
-        <p class="instrucciones">Al pulsar, se abrirá una pestaña nueva con el servidor de audio.</p>
+        <p>Pega cualquier enlace de YouTube</p>
+        <input type="text" id="videoUrl" placeholder="Pega el enlace aquí...">
+        <button onclick="descargar()">Abrir Descarga</button>
+        <div class="footer">
+            Se abrirá una nueva pestaña.<br>
+            Si no carga, revisa que el enlace sea correcto.
+        </div>
     </div>
 
     <script>
         function descargar() {
-            const url = document.getElementById('videoUrl').value;
+            let url = document.getElementById('videoUrl').value.trim();
             if(!url) return alert("Por favor, pega una URL");
 
-            // Esta función limpia el enlace para sacar solo el código del video
-            const idMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-0_-]{11})/);
-            
-            if (idMatch && idMatch[1]) {
-                const id = idMatch[1];
-                // Abrimos directamente el servicio de conversión en una ventana nueva
-                window.open(`https://api.vevioz.com/@api/button/mp3/${id}`, '_blank');
+            let videoId = "";
+
+            // Intento 1: Formato corto youtu.be/XXXX
+            if (url.includes("youtu.be/")) {
+                videoId = url.split("youtu.be/")[1].split(/[?&]/)[0];
+            } 
+            // Intento 2: Formato largo youtube.com/watch?v=XXXX
+            else if (url.includes("v=")) {
+                videoId = url.split("v=")[1].split("&")[0];
+            }
+            // Intento 3: Shorts o Embed
+            else if (url.includes("shorts/") || url.includes("embed/")) {
+                videoId = url.split("/").pop().split(/[?&]/)[0];
+            }
+
+            if (videoId && videoId.length === 11) {
+                // Abrimos el servidor externo en pestaña nueva
+                window.open(`https://api.vevioz.com/@api/button/mp3/${videoId}`, '_blank');
             } else {
-                alert("El enlace no parece ser de YouTube. Revisa que sea correcto.");
+                alert("No he podido encontrar el código del video. Intenta copiar el enlace de nuevo.");
             }
         }
     </script>
