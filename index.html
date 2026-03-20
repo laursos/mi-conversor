@@ -3,61 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Conversor Profesional</title>
+    <title>Mi Descargador Seguro</title>
     <style>
-        body { font-family: 'Segoe UI', system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #f8fafc; }
-        .card { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 90%; max-width: 420px; text-align: center; border: 1px solid #e2e8f0; }
-        h2 { color: #1e293b; font-size: 1.5rem; margin-bottom: 0.5rem; }
-        p { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; box-sizing: border-box; transition: all 0.3s; }
-        input:focus { border-color: #ef4444; outline: none; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
-        button { width: 100%; padding: 14px; background: #ef4444; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 700; transition: background 0.2s; }
-        button:hover { background: #dc2626; }
-        .footer { margin-top: 1.5rem; font-size: 0.75rem; color: #94a3b8; }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a1a; color: white; }
+        .card { background: #2d2d2d; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 20px 0; border: none; border-radius: 8px; font-size: 14px; background: #3d3d3d; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #e50914; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:hover { background: #b20710; }
+        .info { font-size: 12px; color: #aaa; margin-top: 15px; line-height: 1.4; }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>YouTube a MP3</h2>
-        <p>Conversor seguro para uso personal</p>
-        <input type="text" id="videoUrl" placeholder="Pega el enlace del video aquí..." autocomplete="off">
-        <button onclick="procesarDescarga()">Descargar Audio MP3</button>
-        <div class="footer">
-            Auditado: Compatible con Listas y Shorts.<br>
-            Se abrirá el servidor de descarga en una pestaña nueva.
+        <p>Introduce el enlace del video</p>
+        <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+        <button onclick="descargar()">DESCARGAR AHORA</button>
+        <div class="info">
+            La descarga se procesará en una pestaña limpia.<br>
+            Sin instalaciones ni registros.
         </div>
     </div>
 
     <script>
-        function procesarDescarga() {
-            const input = document.getElementById('videoUrl').value.trim();
-            if (!input) {
-                alert("Por favor, introduce una dirección de YouTube.");
-                return;
-            }
+        function descargar() {
+            const val = document.getElementById('videoUrl').value.trim();
+            if(!val) return alert("Pega un enlace");
 
-            // Auditoría del enlace: Extrae el ID del video incluso con basura en la URL
-            let videoId = "";
-            const patrones = [
-                /(?:v=|\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/, // watch?v= o enlaces con parámetros
-                /youtu\.be\/([a-zA-Z0-9_-]{11})/,         // enlaces cortos
-                /shorts\/([a-zA-Z0-9_-]{11})/             // YouTube Shorts
-            ];
+            // Extraemos el ID del video de forma ultra-simple
+            let id = "";
+            if(val.includes("v=")) id = val.split("v=")[1].split("&")[0];
+            else if(val.includes("youtu.be/")) id = val.split("youtu.be/")[1].split("?")[0];
+            else if(val.includes("shorts/")) id = val.split("shorts/")[1].split("?")[0];
 
-            for (let patron of patrones) {
-                const coincidencia = input.match(patron);
-                if (coincidencia) {
-                    videoId = coincidencia[1];
-                    break;
-                }
-            }
-
-            if (videoId && videoId.length === 11) {
-                // Cambiamos a un servidor de alta disponibilidad (API de 2026)
-                const downloadUrl = `https://9xbuddy.com/process?url=https://www.youtube.com/watch?v=${videoId}`;
-                window.open(downloadUrl, '_blank');
+            if(id.length === 11) {
+                // Usamos un servidor de descarga directa mucho más estable
+                const serverUrl = `https://y2mate.nu/es-ES/download?url=https://www.youtube.com/watch?v=${id}`;
+                window.open(serverUrl, '_blank');
             } else {
-                alert("Enlace no reconocido. Asegúrate de copiarlo directamente de YouTube.");
+                alert("Enlace no válido. Asegúrate de que sea un video de YouTube.");
             }
         }
     </script>
